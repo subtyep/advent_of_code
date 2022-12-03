@@ -1,38 +1,35 @@
+value = 1
+values = {}
+for letter in "abcdefghijklmnopqrstuvwxyz":
+    values[letter] = value
+    values[letter.upper()] = value + 26
+    value += 1
 
 
 def run(input_file: str):
     file = open(input_file, "r")
 
-    value = 1
-    values = {}
-    for letter in "abcdefghijklmnopqrstuvwxyz":
-        values[letter] = value
-        values[letter.upper()] = value + 26
-        value += 1
+    print(sum(calculate_scores(file.readlines())))
 
-    scores = []
 
+def calculate_scores(lines):
     group = []
-    for line in file.readlines():
+    for line in lines:
         group.append(line.strip())
 
         if len(group) != 3:
             continue
 
         (in_common, ) = set.intersection(
-            set(group[0]),
-            set(group[1]),
-            set(group[2])
+            set(group.pop()),
+            set(group.pop()),
+            set(group.pop())
         )
 
-        group = []
-
-        scores.append(values.get(in_common))
-
-    print(sum(scores))
+        yield values.get(in_common)
 
 
 if __name__ == '__main__':
-    run("input.txt")
+    run("simple_scenario.txt")
 
 
