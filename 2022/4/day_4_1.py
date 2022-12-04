@@ -6,19 +6,16 @@ def run(input_file: str):
 
     for line in file.readlines():
         (first, second) = line.strip().split(",")
-        first = first.split("-")
-        second = second.split("-")
+        (first_start, first_stop) = first.split("-")
+        (second_start, second_stop) = second.split("-")
 
-        first_assignment = SectionAssignment(int(first[0]), int(first[1]))
-        second_assignment = SectionAssignment(int(second[0]), int(second[1]))
+        first_assignment = SectionAssignment(int(first_start), int(first_stop))
+        second_assignment = SectionAssignment(int(second_start), int(second_stop))
 
-        contains = first_assignment.fully_contains(second_assignment) or second_assignment.fully_contains(first_assignment)
-        overlaps = first_assignment.overlaps(second_assignment) or second_assignment.overlaps(first_assignment)
-
-        if contains:
+        if first_assignment.fully_contains(second_assignment):
             contained_assignments += 1
 
-        if overlaps:
+        if first_assignment.overlaps(second_assignment):
             overlapped_assignments += 1
 
     print(contained_assignments, overlapped_assignments)
@@ -29,31 +26,20 @@ class SectionAssignment:
     def __init__(self, section_start: int, section_stop: int) -> None:
         super().__init__()
 
-        self.section_start = section_start
-        self.section_stop = section_stop
-
-    def __str__(self) -> str:
-        return f"({self.section_start}-{self.section_stop})"
+        self.assignment = set(range(section_start, section_stop + 1))
 
     def fully_contains(self, other: 'SectionAssignment') -> bool:
         """
-        Returns true if other is fully contained within this section assignment
+        Returns true if either assignment is fully contained within the other
         """
-
-        start_within = self.section_start <= other.section_start <= self.section_stop
-        end_within = self.section_start <= other.section_stop <= self.section_stop
-
-        return start_within and end_within
+        overlap_count = len(self.assignment & other.assignment)
+        return overlap_count == len(other.assignment) or overlap_count == len(self.assignment)
 
     def overlaps(self, other: 'SectionAssignment') -> bool:
         """
         Returns true if any part of the two assignments overlaps
         """
-
-        start_within = self.section_start <= other.section_start <= self.section_stop
-        end_within = self.section_start <= other.section_stop <= self.section_stop
-
-        return start_within or end_within
+        return len(self.assignment & other.assignment) > 0
 
 
 if __name__ == '__main__':
