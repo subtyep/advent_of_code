@@ -3,18 +3,29 @@ DOWN = "D"
 LEFT = "L"
 RIGHT = "R"
 
-
 class Point:
 
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
 
-    def __str__(self) -> str:
-        return f"({self.x},{self.y})"
+    def move_towards(self, other: 'Point'):
 
-    def __repr__(self) -> str:
-        return str(self)
+        x_diff = other.x - self.x
+        y_diff = other.y - self.y
+
+        if abs(x_diff) <= 1 and abs(y_diff) <= 1:
+            return
+
+        if x_diff < 0:
+            self.x -= 1
+        elif x_diff > 0:
+            self.x += 1
+
+        if y_diff < 0:
+            self.y -= 1
+        elif y_diff > 0:
+            self.y += 1
 
 
 def run():
@@ -43,39 +54,12 @@ def run():
             elif move == LEFT:
                 head.x -= 1
 
-            for i in range(len(knots) - 1):
-                move_knot(knots[i], knots[i+1])
+            for i in range(1, len(knots)):
+                knots[i].move_towards(knots[i-1])
 
             save_tail_location()
 
-    print("count_locations_visited", len(locations_visited))
-
-
-def move_knot(lead_knot: Point, follow_knot: Point) -> None:
-    x_diff = lead_knot.x - follow_knot.x
-    y_diff = lead_knot.y - follow_knot.y
-
-    if x_diff == 2 and y_diff == 0:
-        follow_knot.x += 1
-    elif x_diff == -2 and y_diff == 0:
-        follow_knot.x -= 1
-    elif x_diff == 0 and y_diff == 2:
-        follow_knot.y += 1
-    elif x_diff == 0 and y_diff == -2:
-        follow_knot.y -= 1
-
-    elif (x_diff == -2 and y_diff == 1) or (x_diff == -1 and y_diff == 2) or (x_diff == -2 and y_diff == 2):
-        follow_knot.x -= 1
-        follow_knot.y += 1
-    elif (x_diff == 1 and y_diff == 2) or (x_diff == 2 and y_diff == 1) or (x_diff == 2 and y_diff == 2):
-        follow_knot.x += 1
-        follow_knot.y += 1
-    elif (x_diff == 2 and y_diff == -1) or (x_diff == 1 and y_diff == -2) or (x_diff == 2 and y_diff == -2):
-        follow_knot.x += 1
-        follow_knot.y -= 1
-    elif (x_diff == -1 and y_diff == -2) or (x_diff == -2 and y_diff == -1) or (x_diff == -2 and y_diff == -2):
-        follow_knot.x -= 1
-        follow_knot.y -= 1
+    print("count_locations_visited", len(locations_visited))  #2793
 
 
 if __name__ == '__main__':
