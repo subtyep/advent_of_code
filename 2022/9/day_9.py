@@ -28,11 +28,11 @@ class Point:
             self.y += 1
 
 
-def run():
+def run(num_knots):
     file = open("input.txt", "r")
     commands = file.read().splitlines()
 
-    knots = [Point(0, 0) for _ in range(10)]
+    knots = [Point(0, 0) for _ in range(num_knots)]
     head = knots[0]
     tail = knots[-1]
 
@@ -63,6 +63,7 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    run(2)
+    run(10)
 
 
