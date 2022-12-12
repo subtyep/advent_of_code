@@ -4,11 +4,10 @@ v["-"] = 99
 
 def run():
     file = open("input.txt", "r")
-    input = file.read().splitlines()
 
     grid = []
 
-    for i, row in enumerate(input):
+    for i, row in enumerate(file.read().splitlines()):
         grid.append([tile for tile in row])
 
     grid.insert(0, ["-" for _ in range(len(grid[0]))])
@@ -18,26 +17,13 @@ def run():
         row.insert(0, "-")
         row.append("-")
 
-    starts = find_start_positions(grid)
-    distances = []
-
-    for start in starts:
-        distance = walk_it_up(grid, start)
-
-        if distance:
-            distances.append(distance)
-
-    print("shortest", min(distances))
-
-
-def walk_it_up(grid, start):
-    positions = [start]
-    visited = set()
-    visited.add(start)
+    positions = find_start_positions(grid)
+    visited = set(positions)
 
     # start steps at -1 to account for "stepping into" the first spot
     steps = -1
-    while positions:
+    found = False
+    while positions and not found:
         count = len(positions)
 
         steps += 1
@@ -49,7 +35,9 @@ def walk_it_up(grid, start):
             y = p[1]
 
             if grid[x][y] == "E":
-                return steps
+                print("found it!")
+                found = True
+                break
 
             cur_val = v.get(grid[x][y], 100)
 
@@ -63,7 +51,7 @@ def walk_it_up(grid, start):
                     positions.append((k, j))
                     visited.add((k, j))
 
-    return None
+    print("shortest", steps)
 
 
 def find_start_positions(grid):
