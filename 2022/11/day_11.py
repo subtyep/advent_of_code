@@ -1,3 +1,6 @@
+import math
+
+
 class Monkey:
 
     def __init__(self, num) -> None:
@@ -49,14 +52,23 @@ class Monkey:
 def run(rounds):
     monkeys = initialize_state()
 
+    divisions = [m.divisible_num for m in monkeys]
+
+    lcm = math.lcm(*divisions)
+    print(lcm)
+
     for round_counter in range(rounds):
         print(f"Round {round_counter}")
         for monkey in monkeys:
             monkey.throw_all_the_shit()
 
-        # print(f"After Round {round_counter}")
-        # for monkey in monkeys:
-        #     print(f"Monkey {monkey.num}: {monkey.items}")
+        # check for items over lcm
+        for monkey in monkeys:
+            monkey.items = [item % lcm for item in monkey.items]
+
+        print(f"After Round {round_counter}")
+        for monkey in monkeys:
+            print(f"Monkey {monkey.num}: {monkey.items}")
 
     for monkey in monkeys:
         print(f"Monkey {monkey.num} inspected {monkey.items_inspected} items")
@@ -67,7 +79,7 @@ def run(rounds):
 
 
 def initialize_state():
-    file = open("simple_scenario.txt", "r")
+    file = open("input.txt", "r")
     instructions = file.read().splitlines()
     num_monkeys = int((len(instructions) + 1) / 7)
 
@@ -86,6 +98,6 @@ def initialize_state():
 
 
 if __name__ == '__main__':
-    run(20)
+    run(10000)
 
 
